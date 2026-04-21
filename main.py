@@ -1,9 +1,12 @@
 import telebot
+import os
 from telebot import types
 from openai import OpenAI
 #Всякие разные вещи
-bot = telebot.TeleBot(BOT_API_TOKEN)
-client = OpenAI(api_key=OpenaAi_KEY, base_url='https://routerai.ru/api/v1')
+TOKEN = os.getenv('BOT_API_TOKEN')
+OPENAI_KEY = os.getenv('OpenaAi_KEY')
+bot = telebot.TeleBot(TOKEN)
+client = OpenAI(api_key=OPENAI_KEY, base_url='https://routerai.ru/api/v1')
 #Всякие словари
 chat_history = {}
 if __name__ == "__main__":
