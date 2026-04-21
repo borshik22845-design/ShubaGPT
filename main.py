@@ -2,7 +2,7 @@ import telebot
 from telebot import types
 from openai import OpenAI
 #Всякие разные вещи
-bot = telebot.TeleBot('API_TOKEN')
+bot = telebot.TeleBot(API_TOKEN)
 client = OpenAI(api_key=OpenaAi_KEY, base_url='https://routerai.ru/api/v1')
 #Всякие словари
 chat_history = {}
