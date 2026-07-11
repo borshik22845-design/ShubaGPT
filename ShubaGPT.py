@@ -55,7 +55,7 @@ class AiBot:
 
 
     async def cmd_help(self, message: Message):
-        await message.answer(f"/restart - сбрасывает диалог \n /ai - переключает режим")
+        await message.answer(f"/restart - сбрасывает диалог \n/ai - переключает режим")
 
 
     async def process_ai(self, user_id, text, name):
