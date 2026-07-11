@@ -5,6 +5,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
+print("🔍 ТЕКУЩИЙ URL БАЗЫ:", DATABASE_URL)  # <-- ДОБАВЬ ЭТУ СТРОКУ
 
 engine = create_async_engine(
     DATABASE_URL,
