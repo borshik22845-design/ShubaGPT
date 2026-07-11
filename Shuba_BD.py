@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, JSON, select
+from sqlalchemy import Column, BigInteger, String, Boolean, JSON, select
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 from sqlalchemy.orm import DeclarativeBase
 import os
@@ -21,7 +21,7 @@ class Base(DeclarativeBase):
 class User(Base):
     __tablename__ = "users"
 
-    user_id = Column(Integer, primary_key=True)
+    user_id = Column(BigInteger, primary_key=True)
     dialogue = Column(JSON, nullable=True, default=lambda: [{"role": "system", "content": "Привет! Ты ии чат бот ShubaGPT в Telegram, на этот момент времени ты можешь только отвечать на текст картинки тебе не отправятся как и многое другое, кроме текста."}])
     privilege = Column(String(50), nullable=True, default=None)
     ai = Column(Boolean, default=False)
