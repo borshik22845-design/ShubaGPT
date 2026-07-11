@@ -30,7 +30,7 @@ class AiBot:
         self.dp.message.register(self.cmd_help, Command("help"))
 
         self.dp.message.register(self.private_start, private, Command("start"))
-        self.dp.message.register(self.private_start, group, Command("start"))
+        self.dp.message.register(self.group_start, group, Command("start"))
         self.dp.message.register(self.set_private_ai, private, Command("ai"))
         self.dp.message.register(self.set_group_ai, group, Command("ai"))
         self.dp.message.register(self.private_restart, private, Command("restart"))
