@@ -27,9 +27,10 @@ class AiBot:
         private_text = private & F.text & ~F.text.startswith('/')
         group_text = group & F.text & ~F.text.startswith('/')
 
-        self.dp.message.register(self.cmd_start, Command("start"))
         self.dp.message.register(self.cmd_help, Command("help"))
 
+        self.dp.message.register(self.private_start, private, Command("start"))
+        self.db.message.register(self.private_start, group, Command("start"))
         self.dp.message.register(self.set_private_ai, private, Command("ai"))
         self.dp.message.register(self.set_group_ai, group, Command("ai"))
         self.dp.message.register(self.private_restart, private, Command("restart"))
@@ -41,14 +42,20 @@ class AiBot:
 
 
 
-    async def cmd_start(self, message: Message):
+    async def private_start(self, message: Message):
         user_id = message.from_user.id
         await user_register(user_id)
         await message.answer("Привет! я Shuba_GPT, используй команду /help.")
 
 
+    async def group_start(self, message: Message):
+        user_id = message.chat.id
+        await user_register(user_id)
+        await message.answer("Привет! я Shuba_GPT, используй команду /help.")
+
+
     async def cmd_help(self, message: Message):
-        await message.answer("пока что нету ничего")
+        await message.answer(f"/restart - сбрасывает диалог \n /ai - переключает режим")
 
 
     async def process_ai(self, user_id, text, name):
