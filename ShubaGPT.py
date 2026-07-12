@@ -64,7 +64,7 @@ class AiBot:
         user_dialogue.append({"role": "user", "content": f"{name} \n {text}"})
 
         response = await self.client.chat.completions.create(
-            model="nvidia/nemotron-3-super-120b-a12b",
+            model="x-ai/grok-4.3",
             messages=user_dialogue,
         )
 
