@@ -6,6 +6,7 @@ from aiogram.enums import ChatType
 from aiogram import F
 import os
 import asyncio
+from aiogram.utils.chat_action import ChatActionSender
 from dotenv import load_dotenv
 from Shuba_BD import init_db, user_register, view_dialogue, add_dialogue, change_ai, view_ai, is_user_registered
 load_dotenv()
