@@ -22,7 +22,7 @@ class User(Base):
     __tablename__ = "users"
 
     user_id = Column(BigInteger, primary_key=True)
-    dialogue = Column(JSON, nullable=True, default=lambda: [{"role": "system", "content": "Привет! Ты ии чат бот ShubaGPT в Telegram, на этот момент времени ты можешь только отвечать на текст картинки тебе не отправятся как и многое другое, кроме текста."}])
+    dialogue = Column(JSON, nullable=True, default=lambda: [{"role": "system", "content": "Привет! Ты ии чат бот ShubaGPT в Telegram, на этот момент времени ты можешь только отвечать на текст картинки тебе не отправятся как и многое другое, кроме текста, и не используй свои знаки выделения в телеграме они не работают."}])
     privilege = Column(String(50), nullable=True, default=None)
     ai = Column(Boolean, default=False)
 
