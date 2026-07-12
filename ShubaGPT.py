@@ -96,7 +96,7 @@ class AiBot:
         user_id = message.from_user.id
         answer = await is_user_registered(user_id)
         if answer:
-            user_dialogue = [{"role": "system", "content": "Привет! Ты ии чат бот ShubaGPT в Telegram, на этот момент времени ты можешь только отвечать на текст картинки тебе не отправятся как и многое другое, кроме текста."}]
+            user_dialogue = [{"role": "system", "content": "Привет! Ты ии чат бот ShubaGPT в Telegram, на этот момент времени ты можешь только отвечать на текст картинки тебе не отправятся как и многое другое, кроме текста, и не используй свои знаки выделения в телеграме они не работают."}]
             await add_dialogue(user_id, user_dialogue)
             await message.answer("История очищена.")
         else:
@@ -107,7 +107,7 @@ class AiBot:
         user_id = message.chat.id
         answer = await is_user_registered(user_id)
         if answer:
-            user_dialogue = [{"role": "system", "content": "Привет! Ты ии чат бот ShubaGPT в Telegram, на этот момент времени ты можешь только отвечать на текст картинки тебе не отправятся как и многое другое, кроме текста."}]
+            user_dialogue = [{"role": "system", "content": "Привет! Ты ии чат бот ShubaGPT в Telegram, на этот момент времени ты можешь только отвечать на текст картинки тебе не отправятся как и многое другое, кроме текста, и не используй свои знаки выделения в телеграме они не работают."}]
             await add_dialogue(user_id, user_dialogue)
             await message.answer("История очищена.")
         else:
