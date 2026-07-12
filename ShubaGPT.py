@@ -119,12 +119,16 @@ class AiBot:
         answer = await is_user_registered(user_id)
         name = message.from_user.first_name or message.from_user.username or "Пользователь"
         if answer:
-            try:
-                assistant_reply = await self.process_ai(user_id, text, name)
-                await message.answer(assistant_reply)
-            except Exception as e:
-                print(e)
-                await message.answer(f"Ошибка =(")
+            ai_enabled = await view_ai(user_id)
+            if not ai_enabled:
+                return
+            async with ChatActionSender.typing(chat_id=message.chat.id, bot=self.bot):
+                try:
+                    assistant_reply = await self.process_ai(user_id, text, name)
+                    await message.answer(assistant_reply)
+                except Exception as e:
+                    print(e)
+                    await message.answer(f"Ошибка =(")
         else:
             await message.answer(f"Зарегистрируйтесь через /start.")
 
@@ -139,12 +143,13 @@ class AiBot:
                 ai_enabled = await view_ai(user_id)
                 if not ai_enabled:
                     return
-                try:
-                    assistant_reply = await self.process_ai(user_id, text, name)
-                    await message.reply(assistant_reply)
-                except Exception as e:
-                    print(e)
-                    await message.answer(f"Ошибка =(")
+                async with ChatActionSender.typing(chat_id=message.chat.id, bot=self.bot):
+                    try:
+                        assistant_reply = await self.process_ai(user_id, text, name)
+                        await message.reply(assistant_reply)
+                    except Exception as e:
+                        print(e)
+                        await message.answer(f"Ошибка =(")
             else:
                  await message.answer(f"Зарегистрируйтесь через /start.")
 
