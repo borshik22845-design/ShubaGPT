@@ -70,6 +70,8 @@ class AiBot:
 
         assistant_reply = response.choices[0].message.content
         user_dialogue.append({"role": "assistant", "content": assistant_reply})
+        if len(user_dialogue) > 20:
+            user_dialogue.pop(1)
         await add_dialogue(user_id, user_dialogue)
         return assistant_reply
 
