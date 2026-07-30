@@ -25,17 +25,6 @@ async def process_ai(client: AsyncOpenAI, user_id, user_message, name):
     return assistant_reply
 
 
-async def process_restart(message, user_id):
-    answer = await is_user_registered(user_id)
-    if answer:
-        user_dialogue = [{"role": "system",
-                          "content": "Привет! Ты ИИ чат-бот ShubaGPT в Telegram. Ты умеешь отвечать на текст и анализировать картинки, которые тебе присылают. Не используй Markdown-разметку (звёздочки, решётки и т.д.) — она не отображается в Telegram."}]
-        await add_dialogue(user_id, user_dialogue)
-        await message.answer("История очищена.")
-    else:
-        await message.answer("Зарегистрируйтесь через /start.")
-
-
 async def process_photo(photo, caption, bot: Bot):
     file = await bot.download(photo.file_id)
     image_bytes = file.read()
