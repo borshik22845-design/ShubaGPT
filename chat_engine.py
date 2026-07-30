@@ -25,7 +25,7 @@ async def process_ai(client: AsyncOpenAI, user_id, user_message, name):
     return assistant_reply
 
 
-async def process_photo(file, photo, caption):
+async def process_photo(file, caption):
     image_bytes = file.read()
     base64_str = base64.b64encode(image_bytes).decode("utf-8")
     data_uri = f"data:image/jpeg;base64,{base64_str}"
