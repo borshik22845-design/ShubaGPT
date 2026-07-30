@@ -20,7 +20,15 @@ async def cmd_help(message: Message):
 
 async def cmd_restart(message: Message):
     user_id = message.chat.id if message.chat.type in {ChatType.GROUP, ChatType.SUPERGROUP} else message.from_user.id
-    await process_restart(message, user_id)
+    answer = await is_user_registered(user_id)
+    if answer:
+        user_dialogue = [{"role": "system",
+                          "content": "Привет! Ты ИИ чат-бот ShubaGPT в Telegram. Ты умеешь отвечать на текст и анализировать картинки, которые тебе присылают. Не используй Markdown-разметку (звёздочки, решётки и т.д.) — она не отображается в Telegram."}]
+        await add_dialogue(user_id, user_dialogue)
+        await message.answer("История очищена.")
+    else:
+        await message.answer("Зарегистрируйтесь через /start.")
+
 
 
 async def cmd_ai_text(message: Message, client: AsyncOpenAI, bot: Bot):
