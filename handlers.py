@@ -4,7 +4,7 @@ from aiogram.utils.chat_action import ChatActionSender
 from aiogram.filters import Command
 from aiogram.enums import ChatType
 from openai import AsyncOpenAI
-from db import user_register, is_user_registered
+from db import user_register, is_user_registered, add_dialogue
 from chat_engine import process_ai, process_photo
 
 
@@ -22,8 +22,7 @@ async def cmd_restart(message: Message):
     user_id = message.chat.id if message.chat.type in {ChatType.GROUP, ChatType.SUPERGROUP} else message.from_user.id
     answer = await is_user_registered(user_id)
     if answer:
-        user_dialogue = [{"role": "system",
-                          "content": "Привет! Ты ИИ чат-бот ShubaGPT в Telegram. Ты умеешь отвечать на текст и анализировать картинки, которые тебе присылают. Не используй Markdown-разметку (звёздочки, решётки и т.д.) — она не отображается в Telegram."}]
+        user_dialogue = [{"role": "system", "content": "Привет! Ты ИИ чат-бот ShubaGPT в Telegram. Ты умеешь отвечать на текст и анализировать картинки, которые тебе присылают. Не используй Markdown-разметку (звёздочки, решётки и т.д.) — она не отображается в Telegram."}]
         await add_dialogue(user_id, user_dialogue)
         await message.answer("История очищена.")
     else:
