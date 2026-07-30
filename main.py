@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from handlers import cmd_start, cmd_help, cmd_restart, cmd_ai_text, cmd_ai_photo
 from db import init_db
 import os
+from functools import partial
 load_dotenv()
 TOKEN = os.getenv("BOT_TOKEN")
 AI_TOKEN_API_KEY = os.getenv("AI_TOKEN_API_KEY")
@@ -30,8 +31,8 @@ class AiBot:
         self.dp.message.register(cmd_start, Command("start"))
         self.dp.message.register(cmd_restart, Command("restart"))
 
-        self.dp.message.register(lambda msg: cmd_ai_text(msg, self.client, self.bot), ai_text)
-        self.dp.message.register(lambda msg: cmd_ai_photo(msg, self.client, self.bot), ai_photo)
+        self.dp.message.register(partial(cmd_ai_text, client=self.client, bot=self.bot), ai_text)
+        self.dp.message.register(partial(cmd_ai_photo, client=self.client, bot=self.bot), ai_photo)
 
 
     async def run(self):
