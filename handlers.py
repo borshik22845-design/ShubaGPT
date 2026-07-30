@@ -5,7 +5,7 @@ from aiogram.filters import Command
 from aiogram.enums import ChatType
 from openai import AsyncOpenAI
 from db import user_register, is_user_registered
-from chat_engine import process_restart, process_ai, process_photo
+from chat_engine import process_ai, process_photo
 
 
 async def cmd_start(message: Message):
