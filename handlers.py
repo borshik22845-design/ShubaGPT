@@ -75,7 +75,7 @@ async def cmd_ai_photo(message: Message, client: AsyncOpenAI, bot: Bot):
                 photo = message.photo[-1]
                 caption = message.caption or ''
                 file = await bot.download(photo.file_id)
-                user_message = await process_photo(file, photo, caption)
+                user_message = await process_photo(file, caption)
                 async with ChatActionSender.typing(chat_id=message.chat.id, bot=bot):
                     try:
                         assistant_reply = await process_ai(client, user_id, user_message, name)
@@ -92,7 +92,7 @@ async def cmd_ai_photo(message: Message, client: AsyncOpenAI, bot: Bot):
             name = message.from_user.first_name or message.from_user.username or "Пользователь"
             photo = message.photo[-1]
             caption = message.caption or ''
-            user_message = await process_photo(bot, photo, caption)
+            user_message = await process_photo(file, caption)
             async with ChatActionSender.typing(chat_id=message.chat.id, bot=bot):
                 try:
                     assistant_reply = await process_ai(client, user_id, user_message, name)
