@@ -1,7 +1,6 @@
 from db import view_dialogue, add_dialogue, is_user_registered
 from openai import AsyncOpenAI
 import base64
-import pypdf
 import os
 
 async def process_ai(client: AsyncOpenAI, user_id, user_message, name):
