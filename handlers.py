@@ -109,7 +109,7 @@ async def cmd_ai_document(message: Message, client: AsyncOpenAI, bot: Bot):
         caption = message.caption or ''
         if '@ShubaGPTbot' in caption:
             user_id = message.chat.id
-            answer = await is_user_register(user_id)
+            answer = await is_user_registered(user_id)
             if answer:
                 file = await bot.download(message.document.file_id)
                 try:
@@ -121,7 +121,7 @@ async def cmd_ai_document(message: Message, client: AsyncOpenAI, bot: Bot):
                 async with ChatActionSender.typing(chat_id=message.chat.id, bot=bot):
                     try:
                         assistant_reply = await process_ai(client, user_id, user_message, name)
-                        await message.reply(assiant_reply)
+                        await message.reply(assistant_reply)
                     except Exception as e:
                         print(e)
                         await message.reply("Ошибка =(")
@@ -129,7 +129,7 @@ async def cmd_ai_document(message: Message, client: AsyncOpenAI, bot: Bot):
                 await message.reply(f"Зарегистрируйтесь через /start.")
     elif message.chat.type == ChatType.PRIVATE:
         user_id = message.from_user.id
-        answer = await is_user_register(user_id)
+        answer = await is_user_registered(user_id)
         if answer:
             caption = message.caption or ''
             file = await bot.download(message.document.file_id)
@@ -142,7 +142,7 @@ async def cmd_ai_document(message: Message, client: AsyncOpenAI, bot: Bot):
             async with ChatActionSender.typing(chat_id=message.chat.id, bot=bot):
                 try:
                     assistant_reply = await process_ai(client, user_id, user_message, name)
-                    await message.reply(assiant_reply)
+                    await message.reply(assistant_reply)
                 except Exception as e:
                     print(e)
                     await message.reply("Ошибка =(")
