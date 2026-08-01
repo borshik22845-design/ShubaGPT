@@ -12,7 +12,7 @@ async def process_ai(client: AsyncOpenAI, user_id, user_message, name):
         user_dialogue.append(user_message)
 
     response = await client.chat.completions.create(
-        model="x-ai/grok-4.3",
+        model="openai/gpt-5.4-nano",
         messages=user_dialogue,
     )
 
