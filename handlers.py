@@ -114,8 +114,9 @@ async def cmd_ai_document(message: Message, client: AsyncOpenAI, bot: Bot):
                 file = await bot.download(message.document.file_id)
                 try:
                     user_message = await process_file(file, caption)
-                except:
-                    await message.reply("Такое расширение файла не поддерживается.")
+                except Exception as e:
+                    print("Ошибка обработки файла:", e)  # ← Посмотри в консоль!
+                    await message.reply("Ошибка при обработке файла.")
                     return
                 name = message.from_user.first_name or message.from_user.username or "Пользователь"
                 async with ChatActionSender.typing(chat_id=message.chat.id, bot=bot):
@@ -135,8 +136,9 @@ async def cmd_ai_document(message: Message, client: AsyncOpenAI, bot: Bot):
             file = await bot.download(message.document.file_id)
             try:
                 user_message = await process_file(file, caption)
-            except:
-                await message.reply("Такое расширение файла не поддерживается.")
+            except Exception as e:
+                print("Ошибка обработки файла:", e)  # ← Посмотри в консоль!
+                await message.reply("Ошибка при обработке файла.")
                 return
             name = message.from_user.first_name or message.from_user.username or "Пользователь"
             async with ChatActionSender.typing(chat_id=message.chat.id, bot=bot):
