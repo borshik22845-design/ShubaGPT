@@ -1,7 +1,8 @@
 from db import view_dialogue, add_dialogue, is_user_registered
 from openai import AsyncOpenAI
 import base64
-from aiogram import Bot
+import pypdf
+import os
 
 async def process_ai(client: AsyncOpenAI, user_id, user_message, name):
     user_dialogue = await view_dialogue(user_id)
@@ -37,3 +38,40 @@ async def process_photo(file, caption):
         ]
     }
     return user_message
+
+
+async def process_file(file, caption):
+    file_bytes =file.read()
+    filename = file.name
+    base64_str = base64.b64encode(file_bytes).decode("utf-8")
+    mime_types = {
+            '.pdf': 'application/pdf',
+            '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            '.xls': 'application/vnd.ms-excel',
+            '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            '.doc': 'application/msword',
+            '.txt': 'text/plain',
+            '.csv': 'text/csv',
+        }
+    ext = os.path.splitext(filename)[1].lower()
+    mime_type = mime_types.get(ext, 'application/octet-stream')
+    data_url = f"data:{mime_type};base64,{base64_str}"
+    user_message = {
+        "role": "user",
+        "content": [
+            {"type": "text", "text": caption},
+            {"type": "file", "file": {
+                    "filename": filename,
+                    "file_data": data_url
+                }
+            }
+        ]
+    }
+    return user_message
+    
+    
+
+
+
+
+
