@@ -5,7 +5,7 @@ from aiogram.filters import Command
 from aiogram.enums import ChatType
 from openai import AsyncOpenAI
 from dotenv import load_dotenv
-from handlers import cmd_start, cmd_help, cmd_restart, cmd_ai_text, cmd_ai_photo
+from handlers import cmd_start, cmd_help, cmd_restart, cmd_ai_text, cmd_ai_photo, cmd_ai_document
 from db import init_db
 import os
 from functools import partial
