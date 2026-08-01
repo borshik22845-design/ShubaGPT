@@ -26,6 +26,7 @@ class AiBot:
 
         ai_text = (private | group) & F.text & ~F.text.startswith('/')
         ai_photo = (private | group) & F.photo
+        ai_file = (private | group) & F.document
 
         self.dp.message.register(cmd_help, Command("help"))
         self.dp.message.register(cmd_start, Command("start"))
@@ -33,6 +34,7 @@ class AiBot:
 
         self.dp.message.register(partial(cmd_ai_text, client=self.client, bot=self.bot), ai_text)
         self.dp.message.register(partial(cmd_ai_photo, client=self.client, bot=self.bot), ai_photo)
+        self.db.message.register(partical(cmd_ai_text, client=self.client, bot=self.bot), ai_file)
 
 
     async def run(self):
