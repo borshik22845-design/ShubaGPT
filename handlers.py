@@ -112,10 +112,11 @@ async def cmd_ai_document(message: Message, client: AsyncOpenAI, bot: Bot):
             answer = await is_user_registered(user_id)
             if answer:
                 file = await bot.download(message.document.file_id)
+                file.name = message.document.file_name
                 try:
                     user_message = await process_file(file, caption)
                 except Exception as e:
-                    print("Ошибка обработки файла:", e)  # ← Посмотри в консоль!
+                    print("Ошибка обработки файла:", e)
                     await message.reply("Ошибка при обработке файла.")
                     return
                 name = message.from_user.first_name or message.from_user.username or "Пользователь"
@@ -134,10 +135,11 @@ async def cmd_ai_document(message: Message, client: AsyncOpenAI, bot: Bot):
         if answer:
             caption = message.caption or ''
             file = await bot.download(message.document.file_id)
+            file.name = message.document.file_name
             try:
                 user_message = await process_file(file, caption)
             except Exception as e:
-                print("Ошибка обработки файла:", e)  # ← Посмотри в консоль!
+                print("Ошибка обработки файла:", e)
                 await message.reply("Ошибка при обработке файла.")
                 return
             name = message.from_user.first_name or message.from_user.username or "Пользователь"
