@@ -34,7 +34,7 @@ class AiBot:
 
         self.dp.message.register(partial(cmd_ai_text, client=self.client, bot=self.bot), ai_text)
         self.dp.message.register(partial(cmd_ai_photo, client=self.client, bot=self.bot), ai_photo)
-        self.db.message.register(partical(cmd_ai_document, client=self.client, bot=self.bot), ai_file)
+        self.dp.message.register(partical(cmd_ai_document, client=self.client, bot=self.bot), ai_file)
 
 
     async def run(self):
