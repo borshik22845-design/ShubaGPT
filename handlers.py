@@ -11,11 +11,11 @@ from chat_engine import process_ai, process_photo
 async def cmd_start(message: Message):
     user_id = message.chat.id if message.chat.type in {ChatType.GROUP, ChatType.SUPERGROUP} else message.from_user.id
     await user_register(user_id)
-    await message.answer("Привет! я Shuba_GPT, используй команду /help.")
+    await message.reply("Привет! я Shuba_GPT, используй команду /help.")
 
 
 async def cmd_help(message: Message):
-    await message.answer(f"/restart - сбрасывает диалог.")
+    await message.reply(f"/restart - сбрасывает диалог.")
 
 
 async def cmd_restart(message: Message):
@@ -24,9 +24,9 @@ async def cmd_restart(message: Message):
     if answer:
         user_dialogue = [{"role": "system", "content": "Привет! Ты ИИ чат-бот ShubaGPT в Telegram. Ты умеешь отвечать на текст и анализировать картинки, которые тебе присылают. Не используй Markdown-разметку (звёздочки, решётки и т.д.) — она не отображается в Telegram."}]
         await add_dialogue(user_id, user_dialogue)
-        await message.answer("История очищена.")
+        await message.reply("История очищена.")
     else:
-        await message.answer("Зарегистрируйтесь через /start.")
+        await message.reply("Зарегистрируйтесь через /start.")
 
 
 
@@ -44,9 +44,9 @@ async def cmd_ai_text(message: Message, client: AsyncOpenAI, bot: Bot):
                         await message.reply(assistant_reply)
                     except Exception as e:
                         print(e)
-                        await message.answer("Ошибка =(")
+                        await message.reply("Ошибка =(")
             else:
-                await message.answer(f"Зарегистрируйтесь через /start.")
+                await message.reply(f"Зарегистрируйтесь через /start.")
     elif message.chat.type == ChatType.PRIVATE:
         user_id = message.from_user.id
         answer = await is_user_registered(user_id)
@@ -56,24 +56,23 @@ async def cmd_ai_text(message: Message, client: AsyncOpenAI, bot: Bot):
             async with ChatActionSender.typing(chat_id = message.chat.id, bot = bot):
                 try:
                     assistant_reply = await process_ai(client, user_id, user_message, name)
-                    await message.answer(assistant_reply)
+                    await message.reply(assistant_reply)
                 except Exception as e:
                     print(e)
-                    await message.answer("Ошибка =(")
+                    await message.reply("Ошибка =(")
         else:
-            await message.answer(f"Зарегистрируйтесь через /start.")
+            await message.reply(f"Зарегистрируйтесь через /start.")
 
 
 async def cmd_ai_photo(message: Message, client: AsyncOpenAI, bot: Bot):
     if message.chat.type in {ChatType.GROUP, ChatType.SUPERGROUP}:
-        text = message.caption or ''
-        answer = await is_user_registered(message.chat.id)
-        if '@ShubaGPTbot' in text:
+        caption = message.caption or ''
+        if '@ShubaGPTbot' in caption:
+            user_id = message.chat.id
+            answer = await is_user_registered(user_id)
             if answer:
-                user_id = message.chat.id
                 name = message.from_user.first_name or message.from_user.username or "Пользователь"
                 photo = message.photo[-1]
-                caption = message.caption or ''
                 file = await bot.download(photo.file_id)
                 user_message = await process_photo(file, caption)
                 async with ChatActionSender.typing(chat_id=message.chat.id, bot=bot):
@@ -82,9 +81,9 @@ async def cmd_ai_photo(message: Message, client: AsyncOpenAI, bot: Bot):
                         await message.reply(assistant_reply)
                     except Exception as e:
                         print(e)
-                        await message.answer("Ошибка =(")
+                        await message.reply("Ошибка =(")
             else:
-                await message.answer(f"Зарегистрируйтесь через /start.")
+                await message.reply(f"Зарегистрируйтесь через /start.")
     elif message.chat.type == ChatType.PRIVATE:
         user_id = message.from_user.id
         answer = await is_user_registered(user_id)
@@ -100,8 +99,52 @@ async def cmd_ai_photo(message: Message, client: AsyncOpenAI, bot: Bot):
                     await message.reply(assistant_reply)
                 except Exception as e:
                     print(e)
-                    await message.answer("Ошибка =(")
+                    await message.reply("Ошибка =(")
         else:
-            await message.answer(f"Зарегистрируйтесь через /start.")
+            await message.reply(f"Зарегистрируйтесь через /start.")
 
 
+async def cmd_ai_document(message: Message, client: AsyncOpenAI, bot: Bot):
+    if message.chat.type in {ChatType.GROUP, ChatType.SUPERGROUP}:
+        caption = message.caption or ''
+        if '@ShubaGPTbot' in caption:
+            user_id = message.chat.id
+            answer = await is_user_register(user_id)
+            if answer:
+                file = await bot.download(message.document.file_id)
+                try:
+                    user_message = await process_file(file, caption)
+                except:
+                    await message.reply("Такое расширение файла не поддерживается.")
+                    return
+                name = message.from_user.first_name or message.from_user.username or "Пользователь"
+                async with ChatActionSender.typing(chat_id=message.chat.id, bot=bot):
+                    try:
+                        assistant_reply = await process_ai(client, user_id, user_message, name)
+                        await message.reply(assiant_reply)
+                    except Exception as e:
+                        print(e)
+                        await message.reply("Ошибка =(")
+            else:
+                await message.reply(f"Зарегистрируйтесь через /start.")
+    elif message.chat.type == ChatType.PRIVATE:
+        user_id = message.from_user.id
+        answer = await is_user_register(user_id)
+        if answer:
+            caption = message.caption or ''
+            file = await bot.download(message.document.file_id)
+            try:
+                user_message = await process_file(file, caption)
+            except:
+                await message.reply("Такое расширение файла не поддерживается.")
+                return
+            name = message.from_user.first_name or message.from_user.username or "Пользователь"
+            async with ChatActionSender.typing(chat_id=message.chat.id, bot=bot):
+                try:
+                    assistant_reply = await process_ai(client, user_id, user_message, name)
+                    await message.reply(assiant_reply)
+                except Exception as e:
+                    print(e)
+                    await message.reply("Ошибка =(")
+        else:
+            await message.reply(f"Зарегистрируйтесь через /start.")
