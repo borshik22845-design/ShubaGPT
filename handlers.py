@@ -105,12 +105,12 @@ async def cmd_ai_document(message: Message, client: AsyncOpenAI, bot: Bot):
             await message.reply("Ошибка при обработке файла.")
             return
         name = message.from_user.first_name or message.from_user.username or "Пользователь"
-            async with ChatActionSender.typing(chat_id=message.chat.id, bot=bot):
-                try:
-                    assistant_reply = await process_ai(client, user_id, user_message, name)
-                    await message.reply(assistant_reply)
-                except Exception as e:
-                    print(e)
-                    await message.reply("Ошибка =(")
+        async with ChatActionSender.typing(chat_id=message.chat.id, bot=bot):
+            try:
+                assistant_reply = await process_ai(client, user_id, user_message, name)
+                await message.reply(assistant_reply)
+            except Exception as e:
+                print(e)
+                await message.reply("Ошибка =(")
     else:
         await message.reply(f"Зарегистрируйтесь через /start.")
