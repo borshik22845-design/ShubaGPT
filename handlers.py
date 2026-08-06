@@ -104,7 +104,7 @@ async def cmd_ai_document(message: Message, client: AsyncOpenAI, bot: Bot):
             print("Ошибка обработки файла:", e)
             await message.reply("Ошибка при обработке файла.")
             return
-            name = message.from_user.first_name or message.from_user.username or "Пользователь"
+        name = message.from_user.first_name or message.from_user.username or "Пользователь"
             async with ChatActionSender.typing(chat_id=message.chat.id, bot=bot):
                 try:
                     assistant_reply = await process_ai(client, user_id, user_message, name)
