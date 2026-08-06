@@ -31,37 +31,28 @@ async def cmd_restart(message: Message):
 
 
 async def cmd_ai_text(message: Message, client: AsyncOpenAI, bot: Bot):
-    if message.chat.type in {ChatType.GROUP, ChatType.SUPERGROUP}:
-        user_message = message.text
-        answer = await is_user_registered(message.chat.id)
-        if '@ShubaGPTbot' in user_message:
-            if answer:
-                user_id = message.chat.id
-                name = message.from_user.first_name or message.from_user.username or "Пользователь"
-                async with ChatActionSender.typing(chat_id=message.chat.id, bot=bot):
-                    try:
-                        assistant_reply = await process_ai(client, user_id, user_message, name)
-                        await message.reply(assistant_reply)
-                    except Exception as e:
-                        print(e)
-                        await message.reply("Ошибка =(")
-            else:
-                await message.reply(f"Зарегистрируйтесь через /start.")
-    elif message.chat.type == ChatType.PRIVATE:
-        user_id = message.from_user.id
-        answer = await is_user_registered(user_id)
-        if answer:
-            user_message = message.text
-            name = message.from_user.first_name or message.from_user.username or "Пользователь"
-            async with ChatActionSender.typing(chat_id = message.chat.id, bot = bot):
-                try:
-                    assistant_reply = await process_ai(client, user_id, user_message, name)
-                    await message.reply(assistant_reply)
-                except Exception as e:
-                    print(e)
-                    await message.reply("Ошибка =(")
-        else:
-            await message.reply(f"Зарегистрируйтесь через /start.")
+    user_message = message.text
+    user_id = (
+        message.chat.id
+        if message.chat.type in {ChatType.GROUP, ChatType.SUPERGROUP}
+        and '@ShubaGPTbot' in user_message
+        else message.from_user.id if message.chat.type == ChatType.PRIVATE
+        else None
+    )
+    if user_id is None:
+        return
+    answer = await is_user_registered(user_id)
+    if answer:
+        name = message.from_user.first_name or message.from_user.username or "Пользователь"
+        async with ChatActionSender.typing(chat_id=message.chat.id, bot=bot):
+            try:
+                assistant_reply = await process_ai(client, user_id, user_message, name)
+                await message.reply(assistant_reply)
+            except Exception as e:
+                print(e)
+                await message.reply("Ошибка =(")
+    else:
+        await message.reply(f"Зарегистрируйтесь через /start.")
 
 
 async def cmd_ai_photo(message: Message, client: AsyncOpenAI, bot: Bot):
