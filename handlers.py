@@ -56,83 +56,54 @@ async def cmd_ai_text(message: Message, client: AsyncOpenAI, bot: Bot):
 
 
 async def cmd_ai_photo(message: Message, client: AsyncOpenAI, bot: Bot):
-    if message.chat.type in {ChatType.GROUP, ChatType.SUPERGROUP}:
-        caption = message.caption or ''
-        if '@ShubaGPTbot' in caption:
-            user_id = message.chat.id
-            answer = await is_user_registered(user_id)
-            if answer:
-                name = message.from_user.first_name or message.from_user.username or "Пользователь"
-                photo = message.photo[-1]
-                file = await bot.download(photo.file_id)
-                user_message = await process_photo(file, caption)
-                async with ChatActionSender.typing(chat_id=message.chat.id, bot=bot):
-                    try:
-                        assistant_reply = await process_ai(client, user_id, user_message, name)
-                        await message.reply(assistant_reply)
-                    except Exception as e:
-                        print(e)
-                        await message.reply("Ошибка =(")
-            else:
-                await message.reply(f"Зарегистрируйтесь через /start.")
-    elif message.chat.type == ChatType.PRIVATE:
-        user_id = message.from_user.id
-        answer = await is_user_registered(user_id)
-        if answer:
-            name = message.from_user.first_name or message.from_user.username or "Пользователь"
-            photo = message.photo[-1]
-            caption = message.caption or ''
-            file = await bot.download(photo.file_id)
-            user_message = await process_photo(file, caption)
-            async with ChatActionSender.typing(chat_id=message.chat.id, bot=bot):
-                try:
-                    assistant_reply = await process_ai(client, user_id, user_message, name)
-                    await message.reply(assistant_reply)
-                except Exception as e:
+    caption = message.caption or ''
+    user_id = (
+        message.chat.id
+        if message.chat.type in {ChatType.GROUP, ChatType.SUPERGROUP}
+        and '@ShubaGPTbot' in caption
+        else message.from_user.id if message.chat.type == ChatType.PRIVATE
+        else None
+    )
+    if user_id is None:
+        return
+    answer = await is_user_registered(user_id)
+    if answer:
+        name = message.from_user.first_name or message.from_user.username or "Пользователь"
+        photo = message.photo[-1]
+        file = await bot.download(photo.file_id)
+        user_message = await process_photo(file, caption)
+        async with ChatActionSender.typing(chat_id=message.chat.id, bot=bot):
+            try:
+                assistant_reply = await process_ai(client, user_id, user_message, name)
+                await message.reply(assistant_reply)
+            except Exception as e:
                     print(e)
-                    await message.reply("Ошибка =(")
-        else:
-            await message.reply(f"Зарегистрируйтесь через /start.")
-
+                await message.reply("Ошибка =(")
+    else:
+        await message.reply(f"Зарегистрируйтесь через /start.")
+        
 
 async def cmd_ai_document(message: Message, client: AsyncOpenAI, bot: Bot):
-    if message.chat.type in {ChatType.GROUP, ChatType.SUPERGROUP}:
-        caption = message.caption or ''
-        if '@ShubaGPTbot' in caption:
-            user_id = message.chat.id
-            answer = await is_user_registered(user_id)
-            if answer:
-                file = await bot.download(message.document.file_id)
-                file.name = message.document.file_name
-                try:
-                    user_message = await process_file(file, caption)
-                except Exception as e:
-                    print("Ошибка обработки файла:", e)
-                    await message.reply("Ошибка при обработке файла.")
-                    return
-                name = message.from_user.first_name or message.from_user.username or "Пользователь"
-                async with ChatActionSender.typing(chat_id=message.chat.id, bot=bot):
-                    try:
-                        assistant_reply = await process_ai(client, user_id, user_message, name)
-                        await message.reply(assistant_reply)
-                    except Exception as e:
-                        print(e)
-                        await message.reply("Ошибка =(")
-            else:
-                await message.reply(f"Зарегистрируйтесь через /start.")
-    elif message.chat.type == ChatType.PRIVATE:
-        user_id = message.from_user.id
-        answer = await is_user_registered(user_id)
-        if answer:
-            caption = message.caption or ''
-            file = await bot.download(message.document.file_id)
-            file.name = message.document.file_name
-            try:
-                user_message = await process_file(file, caption)
-            except Exception as e:
-                print("Ошибка обработки файла:", e)
-                await message.reply("Ошибка при обработке файла.")
-                return
+    caption = message.caption or ''
+    user_id = (
+        message.chat.id
+        if message.chat.type in {ChatType.GROUP, ChatType.SUPERGROUP}
+        and '@ShubaGPTbot' in caption
+        else message.from_user.id if message.chat.type == ChatType.PRIVATE
+        else None
+    )
+    if user_id is None:
+    return
+    answer = await is_user_registered(user_id)
+    if answer:
+        file = await bot.download(message.document.file_id)
+        file.name = message.document.file_name
+        try:
+            user_message = await process_file(file, caption)
+        except Exception as e:
+            print("Ошибка обработки файла:", e)
+            await message.reply("Ошибка при обработке файла.")
+            return
             name = message.from_user.first_name or message.from_user.username or "Пользователь"
             async with ChatActionSender.typing(chat_id=message.chat.id, bot=bot):
                 try:
@@ -141,5 +112,5 @@ async def cmd_ai_document(message: Message, client: AsyncOpenAI, bot: Bot):
                 except Exception as e:
                     print(e)
                     await message.reply("Ошибка =(")
-        else:
-            await message.reply(f"Зарегистрируйтесь через /start.")
+    else:
+        await message.reply(f"Зарегистрируйтесь через /start.")
