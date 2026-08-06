@@ -77,7 +77,7 @@ async def cmd_ai_photo(message: Message, client: AsyncOpenAI, bot: Bot):
                 assistant_reply = await process_ai(client, user_id, user_message, name)
                 await message.reply(assistant_reply)
             except Exception as e:
-                    print(e)
+                print(e)
                 await message.reply("Ошибка =(")
     else:
         await message.reply(f"Зарегистрируйтесь через /start.")
@@ -93,7 +93,7 @@ async def cmd_ai_document(message: Message, client: AsyncOpenAI, bot: Bot):
         else None
     )
     if user_id is None:
-    return
+        return
     answer = await is_user_registered(user_id)
     if answer:
         file = await bot.download(message.document.file_id)
