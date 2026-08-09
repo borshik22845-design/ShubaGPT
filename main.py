@@ -28,9 +28,9 @@ class AiBot:
         ai_photo = (private | group) & F.photo
         ai_file = (private | group) & F.document
 
-        self.dp.message.register(cmd_help, Command("help"))
-        self.dp.message.register(cmd_start, Command("start"))
-        self.dp.message.register(cmd_restart, Command("restart"))
+        self.dp.message.register(cmd_start, Command("start") | Command("start", prefix"!"))
+        self.dp.message.register(cmd_help, Command("help") | Command("help", prefix"!"))
+        self.dp.message.register(cmd_restart, Command("restart") | Command("restart", prefix"!"))
 
         self.dp.message.register(partial(cmd_ai_text, client=self.client, bot=self.bot), ai_text)
         self.dp.message.register(partial(cmd_ai_photo, client=self.client, bot=self.bot), ai_photo)
