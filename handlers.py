@@ -6,16 +6,26 @@ from aiogram.enums import ChatType
 from openai import AsyncOpenAI
 from db import user_register, is_user_registered, add_dialogue
 from chat_engine import process_ai, process_photo, process_file
+HELP_TEXT = """
+👋 Привет! Мои команды:
+!start — старт
+!help — помощь
+!restart — перезапуск
+
+Можно писать и с /.
+
+👥 В группах и супергруппах: чтобы я ответил, начни сообщение с моего @username, иначе я не увижу его."""
 
 
 async def cmd_start(message: Message):
     user_id = message.chat.id if message.chat.type in {ChatType.GROUP, ChatType.SUPERGROUP} else message.from_user.id
     await user_register(user_id)
-    await message.reply("Привет! я Shuba_GPT, используй команду /help.")
+    await message.reply("Привет! я Shuba_GPT, используй команду /help или !help.")
 
 
 async def cmd_help(message: Message):
-    await message.reply(f"/restart - сбрасывает диалог.")
+     await message.reply(HELP_TEXT)
+
 
 
 async def cmd_restart(message: Message):
