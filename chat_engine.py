@@ -5,25 +5,26 @@ import os
 import asyncio
 
 async def process_ai(client: AsyncOpenAI, user_id, user_message, name):
-    user_dialogue = await view_dialogue(user_id)
-    if isinstance(user_message, str):
-        user_dialogue.append({"role": "user", "content": f"{name} \n {user_message}"})
-    else:
-        user_message["content"][0]["text"] = f"{name}\n{user_message['content'][0]['text']}"
-        user_dialogue.append(user_message)
+    async with get_user_lock(user_id):
+        user_dialogue = await view_dialogue(user_id)
+        if isinstance(user_message, str):
+            user_dialogue.append({"role": "user", "content": f"{name} \n {user_message}"})
+        else:
+            user_message["content"][0]["text"] = f"{name}\n{user_message['content'][0]['text']}"
+            user_dialogue.append(user_message)
 
-    response = await client.chat.completions.create(
-        model="openai/gpt-5.4-nano",
-        messages=user_dialogue,
-    )
+        response = await client.chat.completions.create(
+            model="openai/gpt-5.4-nano",
+            messages=user_dialogue,
+        )
 
-    assistant_reply = response.choices[0].message.content
-    user_dialogue.append({"role": "assistant", "content": assistant_reply})
-    while len(user_dialogue) > 20:
-        user_dialogue.pop(1)
-        user_dialogue.pop(1)
-    await add_dialogue(user_id, user_dialogue)
-    return assistant_reply
+        assistant_reply = response.choices[0].message.content
+        user_dialogue.append({"role": "assistant", "content": assistant_reply})
+        while len(user_dialogue) > 20:
+            user_dialogue.pop(1)
+            user_dialogue.pop(1)
+        await add_dialogue(user_id, user_dialogue)
+        return assistant_reply
 
 
 async def process_photo(file, caption):
