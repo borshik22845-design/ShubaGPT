@@ -2,6 +2,7 @@ from db import view_dialogue, add_dialogue, is_user_registered
 from openai import AsyncOpenAI
 import base64
 import os
+import asyncio
 
 async def process_ai(client: AsyncOpenAI, user_id, user_message, name):
     user_dialogue = await view_dialogue(user_id)
@@ -67,6 +68,13 @@ async def process_file(file, caption):
         ]
     }
     return user_message
+
+_locks: dict[int, asyncio.Lock] = {}
+
+def get_user_lock(user_id: int) -> asyncio.Lock:
+    if user_id not in _locks:
+        _locks[user_id] = asyncio.Lock()
+    return _locks[user_id]
     
     
 
