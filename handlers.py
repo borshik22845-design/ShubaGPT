@@ -58,8 +58,8 @@ async def cmd_ai_text(message: Message, client: AsyncOpenAI, bot: Bot):
             try:
                 assistant_reply = await process_ai(client, user_id, user_message, name)
                 await message.reply(assistant_reply)
-            except Exception as e:
-                print(e)
+            except Exception:
+                logging.exception("Ошибка при ответе AI")
                 await message.reply("Ошибка =(")
     else:
         await message.reply(f"Зарегистрируйтесь через /start.")
@@ -86,8 +86,8 @@ async def cmd_ai_photo(message: Message, client: AsyncOpenAI, bot: Bot):
             try:
                 assistant_reply = await process_ai(client, user_id, user_message, name)
                 await message.reply(assistant_reply)
-            except Exception as e:
-                print(e)
+            except Exception:
+                logging.exception("Ошибка при ответе AI")
                 await message.reply("Ошибка =(")
     else:
         await message.reply(f"Зарегистрируйтесь через /start.")
@@ -110,17 +110,16 @@ async def cmd_ai_document(message: Message, client: AsyncOpenAI, bot: Bot):
         file.name = message.document.file_name
         try:
             user_message = await process_file(file, caption)
-        except Exception as e:
-            print("Ошибка обработки файла:", e)
-            await message.reply("Ошибка при обработке файла.")
-            return
+        except Exception:
+            logging.exception("Ошибка при ответе AI")
+            await message.reply("Ошибка =(")
         name = message.from_user.first_name or message.from_user.username or "Пользователь"
         async with ChatActionSender.typing(chat_id=message.chat.id, bot=bot):
             try:
                 assistant_reply = await process_ai(client, user_id, user_message, name)
                 await message.reply(assistant_reply)
-            except Exception as e:
-                print(e)
+            except Exception:
+                logging.exception("Ошибка при ответе AI")
                 await message.reply("Ошибка =(")
     else:
         await message.reply(f"Зарегистрируйтесь через /start.")
