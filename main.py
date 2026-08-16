@@ -1,3 +1,6 @@
+import logging
+from aiogram import BaseMiddleware
+from aiogram.types import Message
 from aiogram import Bot, Dispatcher, types, F
 from aiogram.types import Message
 from aiogram.utils.chat_action import ChatActionSender
@@ -12,10 +15,23 @@ from functools import partial
 load_dotenv()
 TOKEN = os.getenv("BOT_TOKEN")
 AI_TOKEN_API_KEY = os.getenv("AI_TOKEN_API_KEY")
+class ErrorLoggingMiddleware(BaseMiddleware):
+    async def __call__(self, handler, event, data):
+        try:
+            return await handler(event, data)
+        except Exception:
+            logging.exception("Необработанная ошибка в боте")
+            if isinstance(event, Message):
+                try:
+                    await event.answer("Ошибка =(")
+                except Exception:
+                    logging.exception("Не удалось отправить сообщение об ошибке")
+            raise
 class AiBot:
     def __init__(self):
         self.bot = Bot(token = TOKEN)
         self.dp = Dispatcher()
+        self.dp.message.middleware(ErrorLoggingMiddleware())
         self.client = AsyncOpenAI(
             api_key = AI_TOKEN_API_KEY,
             base_url = "https://routerai.ru/api/v1"
