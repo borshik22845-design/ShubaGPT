@@ -97,8 +97,8 @@ async def cmd_ai_photo(message: Message, client: AsyncOpenAI, bot: Bot):
 
 async def cmd_ai_document(message: Message, client: AsyncOpenAI, bot: Bot):
     if message.document.file_size > MAX_FILE_SIZE:
-        await 
-        return message.answer("❌ Файл слишком большой! Отправляйте файл меньше 50мб")
+        await message.answer("❌ Файл слишком большой! Отправляйте файл меньше 50мб")
+        return 
     caption = message.caption or ''
     user_id = (
         message.chat.id
