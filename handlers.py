@@ -7,6 +7,7 @@ from aiogram.enums import ChatType
 from openai import AsyncOpenAI
 from db import user_register, is_user_registered, add_dialogue
 from chat_engine import process_ai, process_photo, process_file
+MAX_FILE_SIZE = 50 * 1024 * 1024
 HELP_TEXT = """
 👋 Привет! Мои команды:
 !start — старт
@@ -107,6 +108,9 @@ async def cmd_ai_document(message: Message, client: AsyncOpenAI, bot: Bot):
         return
     answer = await is_user_registered(user_id)
     if answer:
+        if message.document.file_size > MAX_FILE_SIZE:
+            await 
+            return message.answer("❌ Файл слишком большой! Отправляйте файл меньше 50мб")
         file = await bot.download(message.document.file_id)
         file.name = message.document.file_name
         try:
