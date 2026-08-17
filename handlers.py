@@ -96,6 +96,9 @@ async def cmd_ai_photo(message: Message, client: AsyncOpenAI, bot: Bot):
         
 
 async def cmd_ai_document(message: Message, client: AsyncOpenAI, bot: Bot):
+    if message.document.file_size > MAX_FILE_SIZE:
+        await 
+        return message.answer("❌ Файл слишком большой! Отправляйте файл меньше 50мб")
     caption = message.caption or ''
     user_id = (
         message.chat.id
@@ -108,16 +111,14 @@ async def cmd_ai_document(message: Message, client: AsyncOpenAI, bot: Bot):
         return
     answer = await is_user_registered(user_id)
     if answer:
-        if message.document.file_size > MAX_FILE_SIZE:
-            await 
-            return message.answer("❌ Файл слишком большой! Отправляйте файл меньше 50мб")
         file = await bot.download(message.document.file_id)
         file.name = message.document.file_name
         try:
             user_message = await process_file(file, caption)
         except Exception:
-            logging.exception("Ошибка при ответе AI")
+            logging.exception("Ошибка при обработке файла")
             await message.reply("Ошибка =(")
+            return
         name = message.from_user.first_name or message.from_user.username or "Пользователь"
         async with ChatActionSender.typing(chat_id=message.chat.id, bot=bot):
             try:
