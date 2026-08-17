@@ -52,7 +52,9 @@ async def view_dialogue(user_id):
     """Достает диалог из бд"""
     async with async_session() as session:
         user = await session.get(User, user_id)
-        return user.dialogue if user else None
+        if user:
+            return user.dialogue if user else None
+        return False
 
 
 async def is_user_registered(user_id):
