@@ -2,7 +2,6 @@ import logging
 from aiogram import BaseMiddleware
 from aiogram.types import Message
 from aiogram import Bot, Dispatcher, types, F
-from aiogram.types import Message
 from aiogram.utils.chat_action import ChatActionSender
 from aiogram.filters import Command
 from aiogram.enums import ChatType
